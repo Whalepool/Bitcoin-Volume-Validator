@@ -15,7 +15,7 @@ The idea is simple, stream the most real time feeds of the order book best bid/o
 
 Preview of terminal output:  
 
-![preview](https://i.imgur.com/qOVV1hX.png)  
+![preview](https://i.imgur.com/IxhDDYp.png)  
 
 --- 
 
