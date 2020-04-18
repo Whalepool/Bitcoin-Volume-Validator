@@ -10,7 +10,7 @@ python kraken.py
 The idea is to watch 2 things:  
  - The order book best bid/offer   
  - The raw trade feed     
-   
+
 Then look for trades which occur inbetween the bid/ask.       
 This would indicate a trade took place which no one else was able to execute because the trade never appeared on the order book for  anyone to be able to see, to then take.     
     
@@ -20,6 +20,7 @@ This would indicate a trade took place which no one else was able to execute bec
 | Kraken | X      |  Tested and no fake volume identified  |  
 | Coinbase     | - | to be confirmed |  
 | Bitfinex     | X      |   Exchange has hidden orders so text is non applicable |  
+| "Bilaxy"  | YES |  Exchanges is "#1" on coincap.io and coinmarketcap, totally fake. See [video](https://www.youtube.com/watch?v=eHZ_p0pRYi4) | 
 
 ---   
     
@@ -70,6 +71,20 @@ Preview of binance output:
 
 #### Bitfinex  Notes
 Bitfinex has hidden orders so orders which might execute between the best bid/offer could easily be written off as a hidden order
+  
+---   
+    
+#### Bilaxy  Notes
+This exchange, among others, is regularly cited was one of the top exchanges on many websites.  
+
+Image:    
+[image of fake exchanges](https://i.imgur.com/k41FM3X.png)   
+ 
+This exchange amongst others are included by coinmarketcap.com and coincap.io and such in their listings and volume reporting, leading to very skewed data.  
+
+Below is a video from the Bilaxy website showing trades just executing between the spread   
+
+[![Bilaxy](https://i.imgur.com/hSdw9XJ.png)](https://www.youtube.com/watch?v=eHZ_p0pRYi4)    
   
 ---  
   
