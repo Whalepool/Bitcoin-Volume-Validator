@@ -16,11 +16,11 @@ This would indicate a trade took place which no one else was able to execute bec
     
 | Exchange        | Volume executed between the spread (\_o\_) ? | Notes  |  
 | ------------- |:-------------:|:----- |  
-| Binance | YES | Approx 30% of volume executes between the spread |   
+| Binance | **YES** | Approx 30% of volume executes between the spread |   
 | Kraken | X      |  Tested and no fake volume identified  |  
 | Coinbase     | - | to be confirmed |  
 | Bitfinex     | X      |   Exchange has hidden orders so text is non applicable |  
-| "Bilaxy"  | YES |  Totally fake. See [video](https://www.youtube.com/watch?v=eHZ_p0pRYi4) | 
+| "Bilaxy"  | **YES** |  Totally fake. See [video](https://www.youtube.com/watch?v=eHZ_p0pRYi4) | 
 
 ---   
     
@@ -54,6 +54,23 @@ Exhibit a:
 ![Binance Volume out of sync with other trusted exchanges](https://i.imgur.com/94komRR.jpg)  
     
   
+#### An anonymous independent code reviewer wrote with regards to binance.py: 
+> - theory: central limit orderbooks have trade executions which require that one side is a maker, and one side is a taker. this means that for every execution there must also be a corresponding book update at that price reflecting a maker order. any trade events reported which violate this price-time priority law of central limit orderbooks indicates fake volume activity reported by the exchange.
+
+> - to test the above theory, real-time websocket stream data from binance is utilised to check that everything is line.
+
+> - the code subscribes to BTCUSDT orderbook feed which is realtime and produces best bid and offer prices and quantities along with orderbook update uid monotonically increasing 
+
+> - the code subscribes to BTCUSDT trade feed which is realtime and produces execution price and quantity along with timestamps for event and trade
+
+> - the code correctly checks orderbook data first, followed by trade data to check whether trade events occur at a price which does not match the most recent orderbook event's best bid/offer
+
+> - i checked verbose outputs of both streams and verified that the timestamps occur chronologically and the orderbook updates are also chronological
+
+> - one potential issue is that the orderbook updates only contain monotonically increasing integer uid rather than an event timestamp or a book update timestamp. this is not ideal as we would prefer to be able to compare the timestamps from bitstamps system across both streams
+
+> - barring any issue with the lack of timestamp on book data it appears there are a number of trade events reported with executins that occur at prices that are greater than the last book update's best offer and less than the best ask, which would not be possible.
+
 ---   
   
 #### Kraken  Notes  
@@ -87,21 +104,4 @@ Below is a video from the Bilaxy website showing trades just executing between t
 [![Bilaxy](https://i.imgur.com/hSdw9XJ.png)](https://www.youtube.com/watch?v=eHZ_p0pRYi4)    
   
 ---  
-  
-
-#### An anonymous independent code reviewer wrote with regards to binance.py: 
-> - theory: central limit orderbooks have trade executions which require that one side is a maker, and one side is a taker. this means that for every execution there must also be a corresponding book update at that price reflecting a maker order. any trade events reported which violate this price-time priority law of central limit orderbooks indicates fake volume activity reported by the exchange.
-
-> - to test the above theory, real-time websocket stream data from binance is utilised to check that everything is line.
-
-> - the code subscribes to BTCUSDT orderbook feed which is realtime and produces best bid and offer prices and quantities along with orderbook update uid monotonically increasing 
-
-> - the code subscribes to BTCUSDT trade feed which is realtime and produces execution price and quantity along with timestamps for event and trade
-
-> - the code correctly checks orderbook data first, followed by trade data to check whether trade events occur at a price which does not match the most recent orderbook event's best bid/offer
-
-> - i checked verbose outputs of both streams and verified that the timestamps occur chronologically and the orderbook updates are also chronological
-
-> - one potential issue is that the orderbook updates only contain monotonically increasing integer uid rather than an event timestamp or a book update timestamp. this is not ideal as we would prefer to be able to compare the timestamps from bitstamps system across both streams
-
-> - barring any issue with the lack of timestamp on book data it appears there are a number of trade events reported with executins that occur at prices that are greater than the last book update's best offer and less than the best ask, which would not be possible.
+ 
