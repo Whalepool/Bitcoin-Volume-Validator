@@ -14,8 +14,8 @@ The script utilize the `python-binance` library found [here](https://github.com/
 The idea is simple, stream the most real time feeds of the order book best bid/offer and the trades and look for trades which happen inbetween the best bid/offer. These are flagged as 'fake volume' trades since they effectively took from the book a trade which was never on the book, thus executed between the spread. 
 
 Preview of terminal output:  
-  
-![preview](https://i.imgur.com/0liF9wA.png)  
+
+![preview](https://i.imgur.com/qOVV1hX.png)  
 
 --- 
 
