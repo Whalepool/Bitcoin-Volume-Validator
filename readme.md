@@ -10,7 +10,7 @@ python kraken.py
 The idea is to watch 2 things, the order book best bid/offer and the raw trade feed, then look for trades which occur inbetween the bid/ask.     
    
 
-| Exchange        | Volume executed between the spread (_o_) ? | Notes  |  
+| Exchange        | Volume executed between the spread (\_o\_) ? | Notes  |  
 | ------------- |:-------------:|:----- |  
 | Binance | YES | Approx 30% of volume executes between the spread |   
 | Kraken | X      |  Tested and no fake volume identified  |  
