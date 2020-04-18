@@ -19,7 +19,7 @@ This would indicate a trade took place which no one else was able to execute bec
 | Binance | **YES** | Approx 30% of volume executes between the spread |   
 | Kraken | X      |  Tested and no fake volume identified  |  
 | Coinbase     | - | to be confirmed |  
-| Bitfinex     | X      |   Exchange has hidden orders so text is non applicable |  
+| Bitfinex     | X      |   Exchange has hidden orders so test is non applicable |  
 | "Bilaxy"  | **YES** |  Totally fake. See [video](https://www.youtube.com/watch?v=eHZ_p0pRYi4) | 
 
 ---   
@@ -85,6 +85,8 @@ Preview of binance output:
 
 #### Coinbase  Notes
 - todo 
+  
+---  
 
 #### Bitfinex  Notes
 Bitfinex has hidden orders so orders which might execute between the best bid/offer could easily be written off as a hidden order
