@@ -20,7 +20,7 @@ This would indicate a trade took place which no one else was able to execute bec
 | Kraken | X      |  Tested and no fake volume identified  |  
 | Coinbase     | - | to be confirmed |  
 | Bitfinex     | X      |   Exchange has hidden orders so text is non applicable |  
-| "Bilaxy"  | YES |  Exchanges is "#1" on coincap.io and coinmarketcap, totally fake. See [video](https://www.youtube.com/watch?v=eHZ_p0pRYi4) | 
+| "Bilaxy"  | YES |  Totally fake. See [video](https://www.youtube.com/watch?v=eHZ_p0pRYi4) | 
 
 ---   
     
