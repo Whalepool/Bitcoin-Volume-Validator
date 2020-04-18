@@ -26,7 +26,7 @@ def process_message(msg):
     # Is a trade stream update 
     else:
         if ( ( msg['p'] > last_bid ) and (msg['p'] < last_ask) ):
-            print('\033[93m', '-- EXECTION BETWEEN SPREAD: ', msg['p'], 'for', msg['q'], '\033[0m')
+            print('\033[93m', '-- EXECUTION BETWEEN SPREAD (_o_): ', msg['p'], 'for', msg['q'], '\033[0m')
             faked_volume = faked_volume + float(msg['q'])
         else:
             print('\u001b[38;5;244m', 'Legit Trade: ', msg['p'], 'for', msg['q'], '\033[0m')
