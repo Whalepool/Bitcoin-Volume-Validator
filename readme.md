@@ -77,7 +77,7 @@ Exhibit a:
 
 Results for XBTEUR 0 fake orders    
    
-Preview of binance output:        
+Preview of Kraken output:        
       
 ![preview](https://i.imgur.com/wTgnHVG.png)      
   
