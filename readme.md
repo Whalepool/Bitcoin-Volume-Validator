@@ -10,6 +10,7 @@ python kraken.py
 The idea is to watch 2 things:  
  - The order book best bid/offer   
  - The raw trade feed     
+   
 Then look for trades which occur inbetween the bid/ask.       
 This would indicate a trade took place which no one else was able to execute because the trade never appeared on the order book for  anyone to be able to see, to then take.     
     
