@@ -2,8 +2,9 @@
 
 ```
 pip install -r requirements.txt
-python binance.py
-python kraken.py
+python binance_check.py
+python kraken_check.py
+python coinbase_check.py
 ```
   
 ### Theory  
@@ -17,8 +18,8 @@ This would indicate a trade took place which no one else was able to execute bec
 | Exchange        | Volume executed between the spread (\_o\_) ? | Notes  |  
 | ------------- |:-------------:|:----- |  
 | Binance | **YES** | Approx 30% of volume executes between the spread |   
-| Kraken | X      |  Tested and no fake volume identified  |  
-| Coinbase     | - | to be confirmed |  
+| Kraken | -      |  **PERFECT** - Tested and no fake volume identified  |  
+| Coinbase     | **YES** | Approx 20-40% of volume executes between the spread |  
 | Bitfinex     | X      |   Exchange has hidden orders so test is non applicable |  
 | "Bilaxy"  | **YES** |  Totally fake. See [video](https://www.youtube.com/watch?v=eHZ_p0pRYi4) | 
 
@@ -84,7 +85,11 @@ Preview of Kraken output:
 --- 
 
 #### Coinbase  Notes
-- todo 
+The coinbase test is built using the `copra` python library [https://github.com/tpodlaski/copra](https://github.com/tpodlaski/copra).  
+   
+Preview of Coinbase output:        
+      
+![preview](https://i.imgur.com/O79uQTJ.png)   
   
 ---  
 
