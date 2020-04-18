@@ -15,9 +15,16 @@ The idea is simple, stream the most real time feeds of the order book best bid/o
 
 Preview of terminal output:  
 
-![preview](https://i.imgur.com/IxhDDYp.png)  
+![preview](https://i.imgur.com/1gLUDzc.png)  
 
 --- 
+
+#### Self Critism   
+  
+It is possible the trades coming through on this raw feed come through post binance internal settlement.  
+They maybe using some distributed nodes to process this trade execution queue.   
+Some of those processes maybe incur some micro lag vs others thus get pushed to the ws stream may not be 100% chronological.  
+I have tried to use the 'trade time' to check for this but unfortunately this is only in miliseconds and so does not offer the level of precision to truely determine if the trades coming through the raw trades feed are indeed chronological  
 
 #### An anonymous indepdentend code reviewer wrote: 
 > - theory: central limit orderbooks have trade executions which require that one side is a maker, and one side is a taker. this means that for every execution there must also be a corresponding book update at that price reflecting a maker order. any trade events reported which violate this price-time priority law of central limit orderbooks indicates fake volume activity reported by the exchange.
