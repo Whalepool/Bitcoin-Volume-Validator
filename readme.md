@@ -5,15 +5,40 @@ pip install -r requirements.txt
 python binance.py
 python kraken.py
 ```
+  
+### Theory  
+The idea is to watch 2 things, the order book best bid/offer and the raw trade feed, then look for trades which occur inbetween the bid/ask.     
+   
 
-### Theory
-The idea is to watch 2 things, the order book best bid/offer and the raw trade feed, then look for trades which occur inbetween the bid/ask.   
+| Exchange        | Volume executed between the spread (_o_) ? | Notes  |  
+| ------------- |:-------------:|:----- |  
+| Binance | YES | Approx 30% of volume executes between the spread |   
+| Kraken | X      |  Tested and no fake volume identified  |  
+| Coinbase     | - | to be confirmed |  
+| Bitfinex     | X      |   Exchange has hidden orders so text is non applicable |  
+
+    
   
-#### Kraken  
-Results: 0 fake orders  
+
+--- 
+
+#### Coinbase  Notes
+- todo 
+
+#### Bitfinex  Notes
+Bitfinex has hidden orders so orders which might execute between the best bid/offer could easily be written off as a hidden order
   
-#### Binance   
-Results: 30% fake orders  
+#### Kraken  Notes
+Results for XBTEUR 0 fake orders  
+
+Preview of binance output:      
+    
+![preview](https://i.imgur.com/wTgnHVG.png)    
+  
+---  
+  
+#### Binance  Notes
+Results for BTCUSDT approx 20-40% fake orders
 
 The script subscribes to the websocket feed for the 2 most real time data sources available.
 - The individual book ticker - [binance api link](https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md#individual-symbol-book-ticker-streams)
@@ -22,18 +47,27 @@ The script utilize the `python-binance` library found [here](https://github.com/
 
 The idea is simple, stream the most real time feeds of the order book best bid/offer and the trades and look for trades which happen inbetween the best bid/offer. These are flagged as 'fake volume' trades since they effectively took from the book a trade which was never on the book, thus executed between the spread. 
 
-Preview of terminal output:  
 
-![preview](https://i.imgur.com/1gLUDzc.png)  
-
---- 
-
-#### Binance  Critism   
+###### Binance  Critism   
   
 It is possible the trades coming through on this raw feed come through post binance internal settlement.  
 They maybe using some distributed nodes to process this trade execution queue.   
 Some of those processes maybe incur some micro lag vs others thus get pushed to the ws stream may not be 100% chronological.  
 I have tried to use the 'trade time' to check for this but unfortunately this is only in miliseconds and so does not offer the level of precision to truely determine if the trades coming through the raw trades feed are indeed chronological  
+
+
+Preview of binance output:    
+  
+![preview](https://i.imgur.com/1gLUDzc.png)  
+  
+Given that binances volume is so out of step with other trusted western exchanges, to the order of 5-10x more, it's not surprising that the scripts show such a high percentage of volume which seems very 'questionable' to say the least.  
+  
+Exhibit a:  
+  
+![Binance Volume out of sync with other trusted exchanges](https://i.imgur.com/94komRR.jpg)  
+  
+
+--- 
 
 #### An anonymous independent code reviewer wrote with regards to binance.py: 
 > - theory: central limit orderbooks have trade executions which require that one side is a maker, and one side is a taker. this means that for every execution there must also be a corresponding book update at that price reflecting a maker order. any trade events reported which violate this price-time priority law of central limit orderbooks indicates fake volume activity reported by the exchange.

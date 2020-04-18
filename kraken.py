@@ -21,9 +21,10 @@ def best_ask():
 
 def printfunction(signalnumber, frame):
 	signal.alarm(1)
-	thebestbid=round(float(best_bid()),1)
-	thebestask=round(float(best_ask()),1)
-	print("Best bid: €" + str(thebestbid) + ", best offer: €" + str(thebestask))
+	bestbid=round(float(best_bid()),1)
+	bestask=round(float(best_ask()),1)
+	print('\u001b[38;5;83m', bestbid, '\033[0m', '\u001b[38;5;244m', '----', '\033[0m', '\u001b[38;5;196m', bestask, '\033[0m')
+
 
 def api_update_book(side, data):
 	for x in data:
@@ -87,15 +88,20 @@ while True:
 			tradevol=result[1][0][0]
 			bestbid=round(float(best_bid()),1)
 			bestask=round(float(best_ask()),1)
-			print("Best bid: €" + str(bestbid) + ", Best ask: €" + str(bestask))
+			print('\u001b[38;5;83m', bestbid, '\033[0m', '\u001b[38;5;244m', '----', '\033[0m', '\u001b[38;5;196m', bestask, '\033[0m')
+
+
 			vol=round(float(result[1][0][1]),4)
 			if tradeprice<float(bestask) and tradeprice>float(bestbid):
 				totalfake=round(totalfake+vol,4)
-				print("FAKE trade of " + str(vol) + "XBT at price €" + str(result[1][0][0]))
+				print('\033[93m', '-- EXECUTION BETWEEN SPREAD (_o_): ', result[1][0][0], 'for', vol, '\033[0m')
 			else:
 				totallegit=round(totallegit+vol,4)
-				print("LEGIT trade of " + str(vol) + "XBT at price €" + str(result[1][0][0]))
-			print("Total fake: " + str(totalfake) + " XBT, legit: " + str(totallegit) + "XBT")
+				print('\u001b[38;5;244m', '-- Legit Trade: ', result[1][0][0], 'for', vol, '\033[0m')
+
+			print('\033[95m', 'total fake: ', totalfake, ' BTC', '\033[0m')
+			print('\033[95m', 'total legit: ', totallegit, ' BTC', '\033[0m')
+
 		elif "as" in api_data[1]:
 			api_update_book("ask", api_data[1]["as"])
 			api_update_book("bid", api_data[1]["bs"])
