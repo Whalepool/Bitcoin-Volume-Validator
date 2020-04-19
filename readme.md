@@ -30,6 +30,16 @@ It is known that some exchanges are just not good at reporting the orderbook dat
 The scripts here compute both Fake Trades Count vs Legit Trades Count, as well as Fake Volume vs. Legit Volume.
 
 Feel free to request an exchange you use to be analysed using our methodology and we'll be happy to post it along with results.
+
+### Suggestion for Exchanges
+
+Our suggestion to exchanges:
+
+- Provide EVENT and MESSAGE timestamps in nanoseconds for book and trade data
+
+- Provide monotonically increasing integer EVENT id's in both book and trade data
+
+If this data is provided then some, if not all, of the discrepancies can be explained.
     
 | Exchange        | Volume executed between the spread (\_o\_) ? | Notes  |  
 | ------------- |:-------------:|:----- |  
