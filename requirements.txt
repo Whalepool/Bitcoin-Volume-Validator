@@ -1,2 +1,3 @@
+asyncio
 python-binance
 copra
