@@ -19,7 +19,7 @@ This would indicate a trade took place which no one else was able to execute bec
 | Exchange        | Volume executed between the spread (\_o\_) ? | Notes  |  
 | ------------- |:-------------:|:----- |  
 | Binance | **30%** | Approx 30% of volume executes between the spread |   
-| Coinbase     | **20-40** | Approx 20-40% of volume executes between the spread |  
+| Coinbase     | **20-40%** | Approx 20-40% of volume executes between the spread |  
 | FTX     | **<1%** | within margin of error for latency issues |  
 | Kraken | **0%**      |  **PERFECT** - Tested and no fake volume identified  |  
 | Bitfinex     | -      |   Exchange has hidden orders so test is non applicable |  
