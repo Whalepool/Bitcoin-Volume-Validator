@@ -5,6 +5,7 @@ pip install -r requirements.txt
 python binance_check.py
 python kraken_check.py
 python coinbase_check.py
+python ftx_check.py
 ```
   
 ### Theory  
@@ -17,10 +18,11 @@ This would indicate a trade took place which no one else was able to execute bec
     
 | Exchange        | Volume executed between the spread (\_o\_) ? | Notes  |  
 | ------------- |:-------------:|:----- |  
-| Binance | **YES** | Approx 30% of volume executes between the spread |   
-| Kraken | -      |  **PERFECT** - Tested and no fake volume identified  |  
-| Coinbase     | **YES** | Approx 20-40% of volume executes between the spread |  
-| Bitfinex     | X      |   Exchange has hidden orders so test is non applicable |  
+| Binance | **30%** | Approx 30% of volume executes between the spread |   
+| Coinbase     | **20-40** | Approx 20-40% of volume executes between the spread |  
+| FTX     | **<1%** | within margin of error for latency issues |  
+| Kraken | **0%**      |  **PERFECT** - Tested and no fake volume identified  |  
+| Bitfinex     | -      |   Exchange has hidden orders so test is non applicable |  
 | "Bilaxy"  | **YES** |  Totally fake. See [video](https://www.youtube.com/watch?v=eHZ_p0pRYi4) | 
 
 ---   
@@ -70,7 +72,26 @@ Exhibit a:
 
 > - one potential issue is that the orderbook updates only contain monotonically increasing integer uid rather than an event timestamp or a book update timestamp. this is not ideal as we would prefer to be able to compare the timestamps from bitstamps system across both streams
 
-> - barring any issue with the lack of timestamp on book data it appears there are a number of trade events reported with executins that occur at prices that are greater than the last book update's best offer and less than the best ask, which would not be possible.
+> - barring any issue with the lack of timestamp on book data it appears there are a number of trade events reported with executins that occur at prices that are greater than the last book update's best offer and less than the best ask, which would not be possible.    
+  
+--- 
+
+#### Coinbase  Notes
+The coinbase test is built using the `copra` python library [https://github.com/tpodlaski/copra](https://github.com/tpodlaski/copra).  
+   
+Preview of Coinbase output:        
+      
+![preview](https://i.imgur.com/O79uQTJ.png)  
+  
+--- 
+
+#### FTX  Notes
+The FTX test was done subscribing to bitcoin perps trades and order book.
+Trade anomalies executing between the spread totalled approx <1% of volume which could be put down to the margin of error for latency related issues.
+   
+Preview of FTX output:        
+      
+![preview](https://i.imgur.com/ph60g9G.png)   
 
 ---   
   
@@ -80,16 +101,7 @@ Results for XBTEUR 0 fake orders
    
 Preview of Kraken output:        
       
-![preview](https://i.imgur.com/wTgnHVG.png)      
-  
---- 
-
-#### Coinbase  Notes
-The coinbase test is built using the `copra` python library [https://github.com/tpodlaski/copra](https://github.com/tpodlaski/copra).  
-   
-Preview of Coinbase output:        
-      
-![preview](https://i.imgur.com/O79uQTJ.png)   
+![preview](https://i.imgur.com/wTgnHVG.png)  
   
 ---  
 
