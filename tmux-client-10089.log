@@ -1,0 +1,56 @@
+1587289429.548128 client started (10089): version 3.0a, socket /tmp/tmux-1000/default, protocol 8
+1587289429.548141 on Linux 4.18.16-arch1-1-ARCH #1 SMP PREEMPT Sat Oct 20 22:06:45 UTC 2018; libevent 2.1.11-stable (poll)
+1587289429.548151 socket is /tmp/tmux-1000/default
+1587289429.548158 trying connect
+1587289429.548165 connect failed: Connection refused
+1587289429.548170 lock file is /tmp/tmux-1000/default.lock
+1587289429.548181 flock succeeded
+1587289429.548183 got lock (6)
+1587289429.548186 trying connect
+1587289429.548190 connect failed: Connection refused
+1587289429.548290 add peer 0x557ae97a1e20: 7 ((nil))
+1587289429.548387 sending message 100 to peer 0x557ae97a1e20 (4 bytes)
+1587289429.548391 sending message 101 to peer 0x557ae97a1e20 (15 bytes)
+1587289429.548398 sending message 102 to peer 0x557ae97a1e20 (11 bytes)
+1587289429.548401 sending message 108 to peer 0x557ae97a1e20 (38 bytes)
+1587289429.548404 sending message 104 to peer 0x557ae97a1e20 (0 bytes)
+1587289429.548406 sending message 107 to peer 0x557ae97a1e20 (4 bytes)
+1587289429.548408 sending message 105 to peer 0x557ae97a1e20 (12 bytes)
+1587289429.548411 sending message 105 to peer 0x557ae97a1e20 (15 bytes)
+1587289429.548413 sending message 105 to peer 0x557ae97a1e20 (18 bytes)
+1587289429.548428 sending message 105 to peer 0x557ae97a1e20 (186 bytes)
+1587289429.548432 sending message 105 to peer 0x557ae97a1e20 (28 bytes)
+1587289429.548434 sending message 105 to peer 0x557ae97a1e20 (15 bytes)
+1587289429.548436 sending message 105 to peer 0x557ae97a1e20 (20 bytes)
+1587289429.548438 sending message 105 to peer 0x557ae97a1e20 (22 bytes)
+1587289429.548440 sending message 105 to peer 0x557ae97a1e20 (31 bytes)
+1587289429.548442 sending message 105 to peer 0x557ae97a1e20 (54 bytes)
+1587289429.548445 sending message 105 to peer 0x557ae97a1e20 (34 bytes)
+1587289429.548447 sending message 105 to peer 0x557ae97a1e20 (51 bytes)
+1587289429.548449 sending message 105 to peer 0x557ae97a1e20 (19 bytes)
+1587289429.548451 sending message 105 to peer 0x557ae97a1e20 (8 bytes)
+1587289429.548453 sending message 105 to peer 0x557ae97a1e20 (42 bytes)
+1587289429.548455 sending message 105 to peer 0x557ae97a1e20 (20 bytes)
+1587289429.548457 sending message 105 to peer 0x557ae97a1e20 (17 bytes)
+1587289429.548459 sending message 105 to peer 0x557ae97a1e20 (24 bytes)
+1587289429.548461 sending message 105 to peer 0x557ae97a1e20 (28 bytes)
+1587289429.548463 sending message 105 to peer 0x557ae97a1e20 (11 bytes)
+1587289429.548465 sending message 105 to peer 0x557ae97a1e20 (8 bytes)
+1587289429.548467 sending message 105 to peer 0x557ae97a1e20 (21 bytes)
+1587289429.548469 sending message 105 to peer 0x557ae97a1e20 (32 bytes)
+1587289429.548471 sending message 105 to peer 0x557ae97a1e20 (1506 bytes)
+1587289429.548481 sending message 105 to peer 0x557ae97a1e20 (31 bytes)
+1587289429.548483 sending message 105 to peer 0x557ae97a1e20 (16 bytes)
+1587289429.548485 sending message 105 to peer 0x557ae97a1e20 (26 bytes)
+1587289429.548488 sending message 105 to peer 0x557ae97a1e20 (20 bytes)
+1587289429.548490 sending message 105 to peer 0x557ae97a1e20 (20 bytes)
+1587289429.548492 sending message 105 to peer 0x557ae97a1e20 (16 bytes)
+1587289429.548494 sending message 106 to peer 0x557ae97a1e20 (0 bytes)
+1587289429.548497 sending message 200 to peer 0x557ae97a1e20 (4 bytes)
+1587289429.548499 client loop enter
+1587289429.578591 peer 0x557ae97a1e20 message 207
+1587289429.578599 sending message 208 to peer 0x557ae97a1e20 (0 bytes)
+1587289431.758957 peer 0x557ae97a1e20 message 203
+1587289431.758966 sending message 205 to peer 0x557ae97a1e20 (0 bytes)
+1587289431.759187 peer 0x557ae97a1e20 message 204
+1587289431.759196 client loop exit

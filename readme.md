@@ -45,9 +45,9 @@ If this data is provided then some, if not all, of the discrepancies can be expl
 | ------------- |:-------------:|:----- |  
 | Binance | **30%** | Approx 30% of volume executes between the spread |   
 | Coinbase     | **20-40%** | Approx 20-40% of volume executes between the spread |  
+| Bitstamp | **10%**      | Tested over a 12h period  | 
 | FTX     | **<1%** | within margin of error for latency issues |  
-| Kraken | **0%**      |  **PERFECT** - Tested and no fake volume identified  |  
-| Bitstamp | **0%**      |  **PERFECT** - Tested and no fake volume identified  |  
+| Kraken | **0%**      |  **PERFECT** - Tested and no fake volume identified  |   
 | Bitfinex     | -      |   Exchange has hidden orders so test is non applicable |  
 | "Bilaxy"  | **YES** |  Totally fake. See [video](https://www.youtube.com/watch?v=eHZ_p0pRYi4) | 
 
@@ -113,6 +113,15 @@ However, the streams on Coinbase were incredibly fast and in many cases events p
 Preview of Coinbase output:        
       
 ![preview](https://i.imgur.com/O79uQTJ.png)  
+
+---   
+  
+#### Bitstamp  Notes  
+Subscribing to `order_book_btcusd` and `live_trades_btcusd` watching over a period of time produced 0 fake orders. 
+
+Preview of Coinbase output:        
+      
+![preview](https://i.imgur.com/8dUeGn7.png) 
   
 --- 
 
@@ -133,11 +142,6 @@ Kraken was the only exchange where we consistently got absolutely 0 fake trades 
 Preview of Kraken output:        
       
 ![preview](https://i.imgur.com/wTgnHVG.png)  
-
----   
-  
-#### Bitstamp  Notes  
-Subscribing to `order_book_btcusd` and `live_trades_btcusd` watching over a period of time produced 0 fake orders. 
   
 ---  
 
