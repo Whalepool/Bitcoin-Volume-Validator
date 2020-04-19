@@ -5,7 +5,7 @@ import json
 import signal
 from websocket import create_connection
 
-bestbid = bestask = legitvol = fakevol = 0
+bestbid = bestask = legitvol = fakevol = num_fake_trades = num_legit_trades= 0
 bidsd = {}
 asksd = {}
 api_domain = "wss://ftx.com/ws/"
@@ -73,6 +73,9 @@ while True:
 			k=sorted(asksd.keys())
 			bestask=k[0]			
 			print('\u001b[38;5;83m', bestbid, '\033[0m', '\u001b[38;5;244m', '----', '\033[0m', '\u001b[38;5;196m', bestask, '\033[0m')
+			print('\033[95m', 'total fake trades: ', num_fake_trades, '\033[0m')
+			print('\033[95m', 'total legit trades: ', num_legit_trades, '\033[0m')
+
 			# print("Best bid: $" + str(bestbid) + ", Best offer: $" + str(bestask))
 		elif api_data['channel'] == 'trades' and api_data['type'] == 'update':
 			trades=api_data['data']
@@ -81,14 +84,19 @@ while True:
 				price=float(trade['price'])
 				if price>bestbid and price<bestask:
 					fakevol=fakevol+qty
+					num_fake_trades = num_fake_trades + 1
 					print('\033[93m', '-- EXECUTION BETWEEN SPREAD (_o_): ', price, 'for', qty, '\033[0m')
 					# print("- FAKE match of " + str(qty) + " BTC at $" + str(price))
 				else:
 					legitvol=legitvol+qty
+					num_legit_trades = num_legit_trades + 1
 					print('\u001b[38;5;244m', '-- Legit Trade: ', price, 'for', qty, '\033[0m')
 					# print("- LEGIT match of " + str(qty) + " BTC at $" + str(price))
 			print('\033[95m', 'total fake: ', fakevol, ' BTC', '\033[0m')
 			print('\033[95m', 'total legit: ', legitvol, ' BTC', '\033[0m')
+			print('\033[95m', 'total fake trades: ', fakevol, '\033[0m')
+			print('\033[95m', 'total legit trades: ', legitvol,'\033[0m')
+
 			# print("Total fake: " + str(fakevol) + " BTC, legit: " + str(legitvol) + " BTC")
 
 	except KeyboardInterrupt:

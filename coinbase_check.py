@@ -7,7 +7,7 @@ import json
 from copra.websocket import Channel, Client
 from pprint import pprint
 
-bestbid = bestask = legitvol = fakevol = 0
+bestbid = bestask = legitvol = fakevol = num_fake_trades = num_legit_trades = 0
 bidsd = {}
 asksd = {}
 change = 0
@@ -17,7 +17,7 @@ def dicttofloat(keyvalue):
 
 class Ticker(Client):
     def on_message(self, message):
-        global bestbid, bestask, legitvol, fakevol, asks, bids, asksd, bidsd, change
+        global bestbid, bestask, legitvol, fakevol, asks, bids, asksd, bidsd, change, num_fake_trades, num_legit_trades
         if message['type'] == 'snapshot':
             #print(message)
             bids=message['bids']
@@ -68,6 +68,8 @@ class Ticker(Client):
 
                 print('\033[95m', 'total fake: ', fakevol, ' BTC', '\033[0m')
                 print('\033[95m', 'total legit: ', legitvol, ' BTC', '\033[0m')
+                print('\033[95m', 'total fake trades: ', num_fake_trades, '\033[0m')
+                print('\033[95m', 'total legit trades: ', num_legit_trades, '\033[0m')
 
         elif message['type'] == 'match':
             timestamp=message['time']
@@ -75,13 +77,20 @@ class Ticker(Client):
             qty=float(message['size'])
             if price>bestbid and price<bestask:
                 fakevol=fakevol+qty
+                num_fake_trades = num_fake_trades + 1
                 print('\033[93m', '-- EXECUTION BETWEEN SPREAD (_o_): ', price, 'for', qty, '\033[0m')
             else:
                 legitvol=legitvol+qty
+                num_legit_trades = num_legit_trades + 1
                 print('\u001b[38;5;244m', '-- Legit Trade: ', price, 'for', qty, '\033[0m')
 
             print('\033[95m', 'total fake: ', fakevol, ' BTC', '\033[0m')
             print('\033[95m', 'total legit: ', legitvol, ' BTC', '\033[0m')
+
+            print('\033[95m', 'total fake trades: ', num_fake_trades, '\033[0m')
+            print('\033[95m', 'total legit trades: ', num_legit_trades, '\033[0m')
+
+
             #match = Match(message)
             #print(tick, "\n\n")
 

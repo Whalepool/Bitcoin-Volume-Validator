@@ -5,7 +5,7 @@ import json
 import signal
 from websocket import create_connection
 
-bestbid = bestask = legitvol = fakevol = 0
+bestbid = bestask = legitvol = fakevol = num_fake_trades = num_legit_trades = 0
 bidsd = {}
 asksd = {}
 api_domain = "wss://ws.bitstamp.net"
@@ -55,15 +55,21 @@ while True:
 			price=float(api_data['data']['price'])
 			if price>bestbid and price<bestask:
 				fakevol=fakevol+qty
+				num_fake_trades = num_fake_trades + 1
 				# print("- FAKE match of " + str(qty) + " BTC at $" + str(price))
 				print('\033[93m', '-- EXECUTION BETWEEN SPREAD (_o_): ', price, 'for', qty, '\033[0m')
 			else:
 				legitvol=legitvol+qty
+				num_legit_trades = num_legit_trades + 1
 				print('\u001b[38;5;244m', '-- Legit Trade: ', price, 'for', qty, '\033[0m')
 				# print("- LEGIT match of " + str(qty) + " BTC at $" + str(price))
 
 			print('\033[95m', 'total fake: ', fakevol, ' BTC', '\033[0m')
 			print('\033[95m', 'total legit: ', legitvol, ' BTC', '\033[0m')
+			print('\033[95m', 'total fake trades: ', num_fake_trades, '\033[0m')
+			print('\033[95m', 'total legit trades: ', num_legit_trades, '\033[0m')
+
+
 		# print("Total fake: " + str(fakevol) + " BTC, legit: " + str(legitvol) + " BTC")
 
 	except KeyboardInterrupt:

@@ -68,7 +68,7 @@ except Exception as error:
 	ws.close()
 	sys.exit(1)
 
-totalfake = totallegit = 0
+totalfake = totallegit = num_fake_trades = num_legit_trades = 0
 
 while True:
 	try:
@@ -90,17 +90,22 @@ while True:
 			bestask=round(float(best_ask()),1)
 			print('\u001b[38;5;83m', bestbid, '\033[0m', '\u001b[38;5;244m', '----', '\033[0m', '\u001b[38;5;196m', bestask, '\033[0m')
 
-
 			vol=round(float(result[1][0][1]),4)
 			if tradeprice<float(bestask) and tradeprice>float(bestbid):
+				num_fake_trades = num_fake_trades + 1
 				totalfake=round(totalfake+vol,4)
 				print('\033[93m', '-- EXECUTION BETWEEN SPREAD (_o_): ', result[1][0][0], 'for', vol, '\033[0m')
 			else:
+				num_legit_trades = num_legit_trades + 1
 				totallegit=round(totallegit+vol,4)
 				print('\u001b[38;5;244m', '-- Legit Trade: ', result[1][0][0], 'for', vol, '\033[0m')
 
 			print('\033[95m', 'total fake: ', totalfake, ' BTC', '\033[0m')
 			print('\033[95m', 'total legit: ', totallegit, ' BTC', '\033[0m')
+			print('\033[95m', 'total fake trades: ', num_fake_trades, '\033[0m')
+			print('\033[95m', 'total legit trades: ', num_legit_trades, '\033[0m')
+
+
 
 		elif "as" in api_data[1]:
 			api_update_book("ask", api_data[1]["as"])
