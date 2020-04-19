@@ -1,11 +1,12 @@
 ## Crypto Exchange Volume Validator
 
 ```
-pip install -r requirements.txt
-python binance_check.py
-python kraken_check.py
-python coinbase_check.py
-python ftx_check.py
+pip install -r requirements.txt  
+python binance_check.py  
+python kraken_check.py  
+python coinbase_check.py  
+python ftx_check.py  
+python bitstamp_check.py  
 ```
   
 ### Theory  
@@ -22,6 +23,7 @@ This would indicate a trade took place which no one else was able to execute bec
 | Coinbase     | **20-40%** | Approx 20-40% of volume executes between the spread |  
 | FTX     | **<1%** | within margin of error for latency issues |  
 | Kraken | **0%**      |  **PERFECT** - Tested and no fake volume identified  |  
+| Bitstamp | **0%**      |  **PERFECT** - Tested and no fake volume identified  |  
 | Bitfinex     | -      |   Exchange has hidden orders so test is non applicable |  
 | "Bilaxy"  | **YES** |  Totally fake. See [video](https://www.youtube.com/watch?v=eHZ_p0pRYi4) | 
 
@@ -78,6 +80,7 @@ Exhibit a:
 
 #### Coinbase  Notes
 The coinbase test is built using the `copra` python library [https://github.com/tpodlaski/copra](https://github.com/tpodlaski/copra).  
+The idea of latency to explain these readings can be ruled out in that all trades that came through never crossed the book. Book crossing would be a clear sign of some latency mis matching yet this never happened.
    
 Preview of Coinbase output:        
       
@@ -102,6 +105,11 @@ Results for XBTEUR 0 fake orders
 Preview of Kraken output:        
       
 ![preview](https://i.imgur.com/wTgnHVG.png)  
+
+---   
+  
+#### Bitstamp  Notes  
+Subscribing to `order_book_btcusd` and `live_trades_btcusd` watching over a period of time produced 0 fake orders. 
   
 ---  
 
