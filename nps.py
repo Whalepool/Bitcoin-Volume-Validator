@@ -1,5 +1,4 @@
 
-from binance_check import BinanceChecker
 import zmq
 import json
 import argparse
@@ -92,6 +91,7 @@ style = Style([
     ('exchangetitle.runtime', 'reverse'),
     ('exchangetitle.prefix', '#fcba03 bg:black bold'),
     ('vline', 'reverse'),
+    ('line.light', '#4d4d4d'),
     ('mbline', "fg:ansiyellow bg:black bold"),
     ('lastbid', "#34eb37"),
     ('spacer', "#bfbfbf bold"),
@@ -121,6 +121,8 @@ def get_title_text(data):
     return [ 
         ("class:exchangetitle.prefix", '⭓'),
         ("class:exchangetitle", ' '+data['exchange_name']+' '),
+        ("", "  "),
+        ("class:exchangetitle", ' '+data['symbol']+' '),
         ("", "  "),
         ("class:status", " run time: "),
         ("class:exchangetitle.runtime", "{:0>8}".format(str(timedelta(seconds=data['running_duration'])))),
@@ -173,6 +175,7 @@ def get_buffer_book_text(data):
 
 def make_exchange_container( e_key ): 
     exchange = {} 
+    exchange['empty_buffer'] = Buffer_()
     exchange['name'] = allowed_exchanges[e_key]['name']
     exchange['title'] = FormattedTextControl()
     exchange['title'].text = HTML('awaiting connection')
@@ -183,14 +186,17 @@ def make_exchange_container( e_key ):
 
     exchange['container'] = HSplit(
         [   
-            Window(BufferControl(Buffer_()), height=0),
+            Window(BufferControl(exchange['empty_buffer']), height=0),
             Window( height=1, content=exchange['title'], align=WindowAlign.LEFT, left_margins=[ScrollbarMargin()], ),
-            Window(height=1, char="-", style="class:line"),
-            VSplit([
-                Window(height=5, width=45, content=exchange['summary'], align=WindowAlign.LEFT, left_margins=[ScrollbarMargin()], ),
-                Window(width=1, char=".", style="class:mbline"),
-                Window( height=1, content=exchange['book_buffer'], align=WindowAlign.LEFT )
-            ]),
+            Window(height=1, char="-", style="class:line.light"),
+            Window( height=1, content=exchange['book_buffer'], align=WindowAlign.CENTER ),
+            Window(height=1, char="-", style="class:line.light"),
+            Window(height=5, width=45, content=exchange['summary'], align=WindowAlign.LEFT, left_margins=[ScrollbarMargin()], ),
+                
+            # VSplit([
+            #     Window(height=5, width=45, content=exchange['summary'], align=WindowAlign.LEFT, left_margins=[ScrollbarMargin()], ),
+            #     # Window(width=1, char=".", style="class:mbline"),
+            # ]),
             Window(height=1, char="-", style="class:line"),
             Window(
                 BufferControl(exchange['trades_buffer'], input_processors=[FormatText()], include_default_input_processors=True),
@@ -252,21 +258,23 @@ def getmzq():
             exchanges[exchange_key]['title'].text = get_title_text(trade['summary'])
             exchanges[exchange_key]['summary'].text = get_summary_text(trade['summary'])
             
-        if (trade['action'] == 'order_mismatch'):
-            txt = '\n'
-            txt += '\033[93m' + ' -- EXECUTION BETWEEN SPREAD (_o_): ' +' \033[0m'
-            txt += '\033[93m' + ' '+str(trade['data']['ts'])+' '       +' \033[0m'
-            txt += '\033[93m' + ' '+str(trade['data']['price'])+' '    +' \033[0m'
-            txt += '\033[93m' + ' '+str(trade['data']['qty'])+' '      +' \033[0m'
-            exchanges[exchange_key]['trades_buffer'].insert_text( txt )
+            exchanges[exchange_key]['empty_buffer'].text = ''
+            exchanges[exchange_key]['empty_buffer'].insert_text( '.' )
+        # if (trade['action'] == 'order_mismatch'):
+        #     txt = '\n'
+        #     txt += '\033[93m' + ' -- EXECUTION BETWEEN SPREAD (_o_): ' +' \033[0m'
+        #     txt += '\033[93m' + ' '+str(trade['data']['ts'])+' '       +' \033[0m'
+        #     txt += '\033[93m' + ' '+str(trade['data']['price'])+' '    +' \033[0m'
+        #     txt += '\033[93m' + ' '+str(trade['data']['qty'])+' '      +' \033[0m'
+        #     exchanges[exchange_key]['trades_buffer'].insert_text( txt )
 
-        if (trade['action'] == 'order_legit'):
-            txt = '\n'
-            txt += '\u001b[38;5;244m ' + ' -- Legit Trade: '                    +' \033[0m'
-            txt += '\u001b[38;5;244m ' + ' '+str(trade['data']['ts'])+' '       +' \033[0m'
-            txt += '\u001b[38;5;244m ' + ' '+str(trade['data']['price'])+' '    +' \033[0m'
-            txt += '\u001b[38;5;244m ' + ' '+str(trade['data']['qty'])+' '      +' \033[0m'
-            exchanges[exchange_key]['trades_buffer'].insert_text( txt )
+        # if (trade['action'] == 'order_legit'):
+        #     txt = '\n'
+        #     txt += '\u001b[38;5;244m ' + ' -- Legit Trade: '                    +' \033[0m'
+        #     txt += '\u001b[38;5;244m ' + ' '+str(trade['data']['ts'])+' '       +' \033[0m'
+        #     txt += '\u001b[38;5;244m ' + ' '+str(trade['data']['price'])+' '    +' \033[0m'
+        #     txt += '\u001b[38;5;244m ' + ' '+str(trade['data']['qty'])+' '      +' \033[0m'
+        #     exchanges[exchange_key]['trades_buffer'].insert_text( txt )
 
 
 import threading 

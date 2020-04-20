@@ -10,7 +10,9 @@ from pprint import pprint
 if __name__ == "__main__":
 
 
-	va = VolumeAnalyser('Bitstamp', output_print=True)
+	va = VolumeAnalyser('Bitstamp')
+	va.set_symbol_info( { 'symbol': 'BTCUSD', 'base_asset': 'BTC', 'quote_asset': 'USD'} ) 
+
 	bestbid = bestask = legitvol = fakevol = num_fake_trades = num_legit_trades = 0
 	bidsd = {}
 	asksd = {}

@@ -13,7 +13,9 @@ if __name__ == "__main__":
 
 	#validates volume on Kraken's XBT/EUR pair
 	global dabestbid, dabestask, last_book_update, va 
-	va = VolumeAnalyser('Kraken', output_print=True)
+	va = VolumeAnalyser('Kraken')
+	va.set_symbol_info( { 'symbol': 'XBTEUR', 'base_asset': 'XBT', 'quote_asset': 'EUR'} ) 
+
 	dabestbid = dabestask = last_book_update = 0
 
 	def dicttofloat(keyvalue):

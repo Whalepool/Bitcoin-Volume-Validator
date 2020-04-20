@@ -1,12 +1,18 @@
 ## Crypto Exchange Volume Validator
 
 ```
+# Install requirements
 pip install -r requirements.txt  
-python binance_check.py  
+
+# Launch Exchange monitor scripts 
+python binance_check.py -t XBTUSDT
 python kraken_check.py  
 python coinbase_check.py  
 python ftx_check.py  
 python bitstamp_check.py  
+
+# Launch the volume monitor TUI app
+python nps.py -e binance kraken coinbase ... 
 ```
   
 ### Theory  
@@ -51,6 +57,25 @@ If this data is provided then some, if not all, of the discrepancies can be expl
 | Bitfinex     | -      |   Exchange has hidden orders so test is non applicable |  
 | "Bilaxy"  | **YES** |  Totally fake. See [video](https://www.youtube.com/watch?v=eHZ_p0pRYi4) | 
 
+
+### Example output   
+Example output from running tmux with 3 exchanges in the top window and the nps.py underneath  
+```    
+# tmux window 1   
+python binance_check.py -t BTCUSDT  
+   
+# tmux window 2    
+python bitstamp_check.py   
+   
+# tmux window 3   
+python coinbase_check.py   
+   
+# tmux bottom window   
+python nps.py -e binance bitstamp coinbase    
+```   
+![preview](https://i.imgur.com/IEdet2s.png)  
+  
+
 ---   
     
 #### Binance  Notes
@@ -72,11 +97,6 @@ Some of those processes maybe incur some micro lag vs others thus get pushed to 
 I have tried to use the 'trade time' to check for this but unfortunately this is only in miliseconds and so does not offer the level of precision to truely determine if the trades coming through the raw trades feed are indeed chronological.
 
 We recommend that Binance and other exchanges include both highly-precise timestamp data for events (not just sending message) as well as integer uid to establish order of events to establish the unambiguous system order.
-
-
-Preview of binance output:    
-  
-![preview](https://i.imgur.com/1gLUDzc.png)  
   
 Given that binances volume is so out of step with other trusted western exchanges, to the order of 5-10x more, it's not surprising that the scripts show such a high percentage of volume which seems very 'questionable' to say the least.  
   
@@ -109,39 +129,23 @@ The coinbase test is built using the `copra` python library [https://github.com/
 The idea of latency to explain these readings can be ruled out in that all trades that came through never crossed the book. Book crossing would be a clear sign of some latency mis matching yet this never happened.
  
 However, the streams on Coinbase were incredibly fast and in many cases events pushed on the same exact nanosecond timestamp. Because of this, we would have liked some integer uid that established the order of events in such cases so it could be disentangled, but this is currently not possible. 
- 
-Preview of Coinbase output:        
-      
-![preview](https://i.imgur.com/O79uQTJ.png)  
 
 ---   
   
 #### Bitstamp  Notes  
 Subscribing to `order_book_btcusd` and `live_trades_btcusd` watching over a period of time produced 0 fake orders. 
-
-Preview of Coinbase output:        
-      
-![preview](https://i.imgur.com/8dUeGn7.png) 
   
 --- 
 
 #### FTX  Notes
 The FTX test was done subscribing to bitcoin perps trades and order book.
 Trade anomalies executing between the spread totalled approx <1% of volume which could be put down to the margin of error for latency related issues.
-   
-Preview of FTX output:        
-      
-![preview](https://i.imgur.com/ph60g9G.png)   
 
 ---   
   
 #### Kraken  Notes  
 
 Kraken was the only exchange where we consistently got absolutely 0 fake trades printed. Kraken provides data on both the book and trade stream using precise timestamps and the order and the CLOB logic was always respected in our analysis.
-   
-Preview of Kraken output:        
-      
-![preview](https://i.imgur.com/wTgnHVG.png)  
   
 ---  
 

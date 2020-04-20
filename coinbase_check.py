@@ -100,7 +100,8 @@ class Ticker(Client):
 
 if __name__ == "__main__":
 
-    va = VolumeAnalyser('Coinbase', output_print=True)
+    va = VolumeAnalyser('Coinbase')
+    va.set_symbol_info( { 'symbol': 'BTCUSD', 'base_asset': 'BTC', 'quote_asset': 'USD'} ) 
 
     product_id = "BTC-USD"
     loop = asyncio.get_event_loop()

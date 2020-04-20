@@ -10,7 +10,8 @@ from datetime import datetime
 
 if __name__ == "__main__":
 
-	va = VolumeAnalyser('FTX', output_print=True)
+	va = VolumeAnalyser('FTX')
+	va.set_symbol_info( { 'symbol': 'BTC-PERP', 'base_asset': 'BTC', 'quote_asset': 'USD'} ) 
 	bestbid = bestask = legitvol = fakevol = num_fake_trades = num_legit_trades= 0
 	bidsd = {}
 	asksd = {}
