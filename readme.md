@@ -44,8 +44,8 @@ If this data is provided then some, if not all, of the discrepancies can be expl
 | Exchange        | Volume executed between the spread (\_o\_) ? | Notes  |  
 | ------------- |:-------------:|:----- |  
 | Binance | **30%** | Approx 30% of volume executes between the spread |   
-| Coinbase     | **20-40%** | Approx 20-40% of volume executes between the spread |  
-| Bitstamp | **10%**      | Tested over a 12h period  | 
+| Coinbase     | **2-3%** | Approx 2-3% of volume executes between the spread |  
+| Bitstamp | **<1%**      | Tested over a 12h period  | 
 | FTX     | **<1%** | within margin of error for latency issues |  
 | Kraken | **0%**      |  **PERFECT** - Tested and no fake volume identified  |   
 | Bitfinex     | -      |   Exchange has hidden orders so test is non applicable |  
