@@ -1,21 +1,26 @@
-#!/usr/bin/env python3
+from volumne_analyser import VolumeAnalyser
+
 
 import asyncio
-from datetime import datetime
-import sys
-import json
 from copra.websocket import Channel, Client
-from pprint import pprint
+
+
 
 bestbid = bestask = legitvol = fakevol = num_fake_trades = num_legit_trades = 0
 bidsd = {}
 asksd = {}
 change = 0
 
-def dicttofloat(keyvalue):
-        return float(keyvalue[0])
+from pprint import pprint
 
 class Ticker(Client):
+
+    # def __init__(self, loop, channel):
+    #     super(Client, self).__init__(loop, channel) 
+
+    #     pprint(self.__dict__)
+    #     exit()
+
     def on_message(self, message):
         global bestbid, bestask, legitvol, fakevol, asks, bids, asksd, bidsd, change, num_fake_trades, num_legit_trades
         if message['type'] == 'snapshot':
@@ -30,10 +35,7 @@ class Ticker(Client):
             for l3 in asks:
                 asksd[ float(l3[0]) ] = l3[1]
             l=sorted(asksd.keys())
-            bestask=l[0]                   
-            #pprint(bids)
-            #pprint(bidsd)
-            #pprint(asksd)
+            bestask=l[0]     
 
             print("Best bid: $" + str(bestbid) + ", Best offer: $" + str(bestask))
         elif message['type'] == 'l2update':
@@ -91,21 +93,36 @@ class Ticker(Client):
             print('\033[95m', 'total legit trades: ', num_legit_trades, '\033[0m')
 
 
-            #match = Match(message)
-            #print(tick, "\n\n")
+class CoinbaseChecker( VolumeAnalyser ) : 
 
-product_id = "BTC-USD"
+    def __init__(self, exchange, output_print=True):
+        VolumeAnalyser.__init__(self, exchange, output_print)
 
-loop = asyncio.get_event_loop()
+    def run(self):
 
-channelt = Channel('level2', product_id)
-channelm = Channel('matches', product_id)
+        product_id = "BTC-USD"
+        loop = asyncio.get_event_loop()
 
-ticker = Ticker(loop, channelt)
-ticker = Ticker(loop, channelm)
+        channelt = Channel('level2', product_id)
+        channelm = Channel('matches', product_id)
 
-try:
-    loop.run_forever()
-except KeyboardInterrupt:
-    loop.run_until_complete(ticker.close())
-    loop.close()
+        ticker = Ticker(loop, channelt)
+        ticker = Ticker(loop, channelm)
+
+        try:
+            loop.run_forever()
+        except KeyboardInterrupt:
+            loop.run_until_complete(ticker.close())
+            loop.close()
+
+
+
+
+
+
+
+
+if __name__ == "__main__":
+
+    App = CoinbaseChecker('Coinbase')
+    App.run()

@@ -4,6 +4,7 @@ import zmq
 import json
 import argparse
 from pprint import pprint
+from datetime import timedelta
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-e','--exchanges', nargs='+', help='Exchanges', required=True, default=[])
@@ -42,7 +43,7 @@ def demogrify(topicmsg):
     return topic, msg   #
 
 
-from prompt_toolkit.application import Application
+from prompt_toolkit.application import Application, get_app
 from prompt_toolkit.document import Document
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.key_binding import KeyBindings
@@ -51,13 +52,26 @@ from prompt_toolkit.layout.controls import BufferControl, FormattedTextControl
 from prompt_toolkit.layout.layout import Layout
 from prompt_toolkit.layout.dimension import LayoutDimension as D
 from prompt_toolkit.styles import Style
-from prompt_toolkit.widgets import TextArea
+from prompt_toolkit.widgets import TextArea, Box
 from prompt_toolkit.layout.processors import Processor, Transformation
 from prompt_toolkit.formatted_text import to_formatted_text, fragment_list_to_text
 from prompt_toolkit.layout.margins import Margin, NumberedMargin, ScrollbarMargin
 from prompt_toolkit.formatted_text import HTML, FormattedText
 from prompt_toolkit import ANSI
+from prompt_toolkit import print_formatted_text
 
+
+
+
+class FormatText(Processor):
+    def apply_transformation(self, transformation_input):
+        fragments = to_formatted_text(ANSI(fragment_list_to_text(transformation_input.fragments)))
+        return Transformation(fragments)
+
+
+class Buffer_(Buffer):
+    def set_text(self, data):
+        self.text = data
 
 
 
@@ -74,6 +88,9 @@ style = Style([
     ('output-field', 'bg:#000044 #ffffff'),
     ('maintitle', '#aaaa00'),
     ('maintitle.since', 'reverse'),
+    ('exchangetitle', '#aaaa00 bg:black bold'),
+    ('exchangetitle.runtime', 'reverse'),
+    ('exchangetitle.prefix', '#fcba03 bg:black bold'),
     ('vline', 'reverse'),
     ('mbline', "fg:ansiyellow bg:black bold"),
     ('lastbid', "#34eb37"),
@@ -81,15 +98,36 @@ style = Style([
     ('lastask', "#eb4c34"),
     ('status', "#aaaa00"),
     ('status.position', '#aaaa00'),
-    ('status.key', '#87992f'),
+    ('status.key', '#c6e334'),
+
+    ("book.unique", '#666699'),
+    ("book.bq", '#00ff00'),
+    ("book.bb", '#33cc33'),
+    ("book.spacer", '#666699'),
+    ("book.bo", '#cc0000'),
+    ("book.aq", '#ff0000'),
+
 ])
 
 
 
 def get_big_text(): 
     return [ 
-        ("class:maintitle", 'Volume Monitor running for '),
-        ("class:maintitle.since", ' 4 hours '),
+        ("class:maintitle", 'Volume Monitor Overview'),
+        ("class:maintitle.since", ''),
+    ]
+
+def get_title_text(data):
+    return [ 
+        ("class:exchangetitle.prefix", '⭓'),
+        ("class:exchangetitle", ' '+data['exchange_name']+' '),
+        ("", "  "),
+        ("class:status", " run time: "),
+        ("class:exchangetitle.runtime", "{:0>8}".format(str(timedelta(seconds=data['running_duration'])))),
+        ("", "  "),
+        ("class:status", " started @ "),
+        ("class:status", data['started']),
+
     ]
 
 def get_summary_text(data=None): 
@@ -123,39 +161,48 @@ def get_summary_text(data=None):
     ]
 
 
+def get_buffer_book_text(data):
+    return [ 
+        ("class:book.unique", '{:<14}'.format(str(data['u']))),   
+        ("class:book.bq", '{:8.6}'.format(data['bq'])), 
+        ("class:book.bb", '{:^10.8}'.format(data['bb'])),   
+        ("class:book.spacer", "-----"),
+        ("class:book.bo", '{:^10.8}'.format(data['bo'])),
+        ("class:book.aq", '{:>8.6}'.format(data['aq'])),  
+    ]
 
-
-def make_exchange_container( exchange ): 
-    title = FormattedTextControl([ ("class:status", ' '+exchange+' '), ("class:status.key", " "), ])
+def make_exchange_container( e_key ): 
     exchange = {} 
-    exchange['title'] = title
-    # exchange['book_buffer'] = FormattedTextControl()
-    exchange['book_buffer'] = Buffer()
-    exchange['trades_buffer'] = Buffer()
+    exchange['name'] = allowed_exchanges[e_key]['name']
+    exchange['title'] = FormattedTextControl()
+    exchange['title'].text = HTML('awaiting connection')
+    exchange['book_buffer'] = FormattedTextControl()
+    exchange['trades_buffer'] = Buffer_()
     exchange['summary'] = FormattedTextControl()
     exchange['summary'].text = get_summary_text()
+
     exchange['container'] = HSplit(
-        [
-            # The titlebar.
+        [   
+            Window(BufferControl(Buffer_()), height=0),
             Window( height=1, content=exchange['title'], align=WindowAlign.LEFT, left_margins=[ScrollbarMargin()], ),
-            # Horizontal separator.
             Window(height=1, char="-", style="class:line"),
-            # The 'body', like defined above.
             VSplit([
                 Window(height=5, width=45, content=exchange['summary'], align=WindowAlign.LEFT, left_margins=[ScrollbarMargin()], ),
                 Window(width=1, char=".", style="class:mbline"),
-                Window(BufferControl(buffer=exchange['book_buffer']), height=5),
-                # Window(height=6, content=exchange['book_buffer']),
+                Window( height=1, content=exchange['book_buffer'], align=WindowAlign.CENTER )
             ]),
             Window(height=1, char="-", style="class:line"),
-            Window(BufferControl(buffer=exchange['trades_buffer'])),
+            Window(
+                BufferControl(exchange['trades_buffer'], input_processors=[FormatText()], include_default_input_processors=True),
+                # right_margins=[ScrollbarMargin(), ScrollbarMargin()],
+            ),
         ]
     )
     return exchange
 
 exchanges = {}
-for e in args.exchanges:
-    exchanges[e] = make_exchange_container( allowed_exchanges[e]['name'] )
+for e_key in args.exchanges:
+    exchanges[e_key] = make_exchange_container( e_key )
 
 
 def get_vsplit():
@@ -189,41 +236,56 @@ def getmzq():
 
     global exchanges
 
-    # output_text = output_field.text + formatted_in+formatted_out
-
-    #     # Add text to output buffer.
-    #     output_field.buffer.document = Document(text=output_text, cursor_position=len(output_text))
-
-
     context = zmq.Context()
     consumer_receiver = context.socket(zmq.SUB)
     consumer_receiver.bind('tcp://127.0.0.1:5000')
     for exchange_key,exchange_layout in exchanges.items():
-        consumer_receiver.setsockopt_string(zmq.SUBSCRIBE, exchange_key+'_output' )
+        consumer_receiver.setsockopt_string(zmq.SUBSCRIBE, exchanges[exchange_key]['name']+'_output' )
 
     while True:
         msg = consumer_receiver.recv()
         topic, trade = demogrify(msg.decode("utf-8"))
-        exchange_key = topic.split('_')[0]
+        exchange_key = topic.split('_')[0].lower()
 
         if trade['action'] == 'book_update':
-            # exchanges[exchange_key]['book_buffer'].insert_text(str(trade)+'\n')
-            text = [ 
-                ("class:lastbid", ' '+str(trade['last_bid'])+' '), 
-                ("class:spacer", ' ------- '),
-                ("class:lastask", ' '+str(trade['last_ask'])+' '),
-            ]
-            exchanges[exchange_key]['book_buffer'].insert_text( str(trade['last_bid'])+' ------- '+str(trade['last_ask'])+'\n' )
-            # exchanges[exchange_key]['book_buffer'].text = exchanges[exchange_key]['book_buffer'].text + text
+            # text = [ 
+            #     ("class:lastbid", ' '+str(trade['last_bid'])+' '), 
+            #     ("class:spacer", ' ------- '),
+            #     ("class:lastask", ' '+str(trade['last_ask'])+' '),
+            # ]
+            # exchanges[exchange_key]['book_buffer'].text = FormattedText(text)
+            # txt = '\n \u001b[38;5;83m '+str(trade['bb'])+' \033[0m \u001b[38;5;244m ------- \033[0m \u001b[38;5;196m '+str(trade['bo'])+' \033[0m '            
+            exchanges[exchange_key]['book_buffer'].text = get_buffer_book_text(trade['data'])
 
+            exchanges[exchange_key]['title'].text = get_title_text(trade['summary'])
+            exchanges[exchange_key]['summary'].text = get_summary_text(trade['summary'])
+            
         if trade['action'] == 'summary':
-            exchanges[exchange_key]['summary'].text = get_summary_text(data=trade)
+            exchanges[exchange_key]['title'].text = get_title_text(
+                name=exchanges[exchange_key]['name'],
+                started=str(trade['started']),
+                running_duration="{:0>8}".format(str(timedelta(seconds=trade['running_duration'])))
+            )
+            exchanges[exchange_key]['summary'].text = get_summary_text(trade['data'])
 
-        if (trade['action'] == 'order_mismatch') or (trade['action'] == 'order_legit'):
-            exchanges[exchange_key]['trades_buffer'].insert_text(str(trade)+'\n')
-        # output_text = output_field.text + str(trade)
-        # output_field.buffer.document = Document(text=output_text, cursor_position=len(output_text))
-        # exchanges['binance']['title'].text = str(trade)
+        if (trade['action'] == 'order_mismatch'):
+
+            txt = '\n'
+            txt += '\033[93m' + ' -- EXECUTION BETWEEN SPREAD (_o_): ' +' \033[0m'
+            txt += '\033[93m' + ' '+str(trade['data']['ts'])+' '       +' \033[0m'
+            txt += '\033[93m' + ' '+str(trade['data']['price'])+' '    +' \033[0m'
+            txt += '\033[93m' + ' '+str(trade['data']['qty'])+' '      +' \033[0m'
+            exchanges[exchange_key]['trades_buffer'].insert_text( txt )
+
+
+        if (trade['action'] == 'order_legit'):
+
+            txt = '\n'
+            txt += '\u001b[38;5;244m ' + ' -- Legit Trade: '                    +' \033[0m'
+            txt += '\u001b[38;5;244m ' + ' '+str(trade['data']['ts'])+' '       +' \033[0m'
+            txt += '\u001b[38;5;244m ' + ' '+str(trade['data']['price'])+' '    +' \033[0m'
+            txt += '\u001b[38;5;244m ' + ' '+str(trade['data']['qty'])+' '      +' \033[0m'
+            exchanges[exchange_key]['trades_buffer'].insert_text( txt )
 
 import threading 
 t = threading.Thread(target=getmzq)
@@ -232,7 +294,6 @@ t.start()
 
 
 application.run()
-
 
 
 
