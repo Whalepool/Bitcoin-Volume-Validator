@@ -111,7 +111,7 @@ style = Style([
 
 
 
-def get_big_text(): 
+def get_app_title_text(): 
     return [ 
         ("class:maintitle", 'Volume Monitor Overview'),
         ("class:maintitle.since", ''),
@@ -216,16 +216,16 @@ def get_vsplit():
 
     return out
 
-root_root = HSplit([
-        # Window( height=1, content=get_big_text(), align=WindowAlign.CENTER ),
-        Window( height=1, content=FormattedTextControl(get_big_text), align=WindowAlign.CENTER ),
-        Window(height=1, char="-", style="class:line"),
-        VSplit(get_vsplit())
-    ])
 
 # Run application.
 application = Application(
-    layout=Layout(root_root),
+    layout=Layout(
+            HSplit([
+            Window( height=1, content=FormattedTextControl(get_app_title_text), align=WindowAlign.CENTER ),
+            Window(height=1, char="-", style="class:line"),
+            VSplit(get_vsplit())
+        ])
+    ),
     key_bindings=kb,
     style=style,
     mouse_support=True,
@@ -248,28 +248,11 @@ def getmzq():
         exchange_key = topic.split('_')[0].lower()
 
         if trade['action'] == 'book_update':
-            # text = [ 
-            #     ("class:lastbid", ' '+str(trade['last_bid'])+' '), 
-            #     ("class:spacer", ' ------- '),
-            #     ("class:lastask", ' '+str(trade['last_ask'])+' '),
-            # ]
-            # exchanges[exchange_key]['book_buffer'].text = FormattedText(text)
-            # txt = '\n \u001b[38;5;83m '+str(trade['bb'])+' \033[0m \u001b[38;5;244m ------- \033[0m \u001b[38;5;196m '+str(trade['bo'])+' \033[0m '            
             exchanges[exchange_key]['book_buffer'].text = get_buffer_book_text(trade['data'])
-
             exchanges[exchange_key]['title'].text = get_title_text(trade['summary'])
             exchanges[exchange_key]['summary'].text = get_summary_text(trade['summary'])
             
-        if trade['action'] == 'summary':
-            exchanges[exchange_key]['title'].text = get_title_text(
-                name=exchanges[exchange_key]['name'],
-                started=str(trade['started']),
-                running_duration="{:0>8}".format(str(timedelta(seconds=trade['running_duration'])))
-            )
-            exchanges[exchange_key]['summary'].text = get_summary_text(trade['data'])
-
         if (trade['action'] == 'order_mismatch'):
-
             txt = '\n'
             txt += '\033[93m' + ' -- EXECUTION BETWEEN SPREAD (_o_): ' +' \033[0m'
             txt += '\033[93m' + ' '+str(trade['data']['ts'])+' '       +' \033[0m'
@@ -277,9 +260,7 @@ def getmzq():
             txt += '\033[93m' + ' '+str(trade['data']['qty'])+' '      +' \033[0m'
             exchanges[exchange_key]['trades_buffer'].insert_text( txt )
 
-
         if (trade['action'] == 'order_legit'):
-
             txt = '\n'
             txt += '\u001b[38;5;244m ' + ' -- Legit Trade: '                    +' \033[0m'
             txt += '\u001b[38;5;244m ' + ' '+str(trade['data']['ts'])+' '       +' \033[0m'
@@ -287,11 +268,11 @@ def getmzq():
             txt += '\u001b[38;5;244m ' + ' '+str(trade['data']['qty'])+' '      +' \033[0m'
             exchanges[exchange_key]['trades_buffer'].insert_text( txt )
 
+
 import threading 
 t = threading.Thread(target=getmzq)
 t.daemon = True
 t.start()
-
 
 application.run()
 
