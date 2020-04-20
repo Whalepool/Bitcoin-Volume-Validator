@@ -163,7 +163,7 @@ def get_summary_text(data=None):
 
 def get_buffer_book_text(data):
     return [ 
-        ("class:book.unique", '{:<14}'.format(str(data['u']))),   
+        ("class:book.unique", '{:^14}'.format(str(data['u']))),   
         ("class:book.bq", '{:8.6}'.format(data['bq'])), 
         ("class:book.bb", '{:^10.8}'.format(data['bb'])),   
         ("class:book.spacer", "-----"),
@@ -189,7 +189,7 @@ def make_exchange_container( e_key ):
             VSplit([
                 Window(height=5, width=45, content=exchange['summary'], align=WindowAlign.LEFT, left_margins=[ScrollbarMargin()], ),
                 Window(width=1, char=".", style="class:mbline"),
-                Window( height=1, content=exchange['book_buffer'], align=WindowAlign.CENTER )
+                Window( height=1, content=exchange['book_buffer'], align=WindowAlign.LEFT )
             ]),
             Window(height=1, char="-", style="class:line"),
             Window(
