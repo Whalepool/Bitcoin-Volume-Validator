@@ -19,6 +19,9 @@ if __name__ == "__main__":
 	def dicttofloat(keyvalue):
 	        return float(keyvalue[0])
 
+	def get_last_book_update():
+		return last_book_update 
+
 	def best_bid():
 		bid = sorted(api_book["bid"].items(), key=dicttofloat, reverse=True)
 		return bid[0][0]
@@ -31,7 +34,6 @@ if __name__ == "__main__":
 		signal.alarm(1)
 		bestbid=round(float(best_bid()),1)
 		bestask=round(float(best_ask()),1)
-		pprint(last_book_update)
 
 		data = {
 			'u' : float(last_book_update), # Unique, order book updateId
@@ -43,6 +45,8 @@ if __name__ == "__main__":
 		va.process_book_entry(data)
 
 	def api_update_book(side, data):
+
+		global last_book_update
 
 		for x in data:
 			price_level = x[0]
@@ -57,7 +61,6 @@ if __name__ == "__main__":
 		elif side == "ask":
 			api_book["ask"] = dict(sorted(api_book["ask"].items(), key=dicttofloat)[:int(api_depth)])
 
-		pprint(last_book_update)
 
 
 
@@ -105,6 +108,7 @@ if __name__ == "__main__":
 		api_data = json.loads(api_data)
 		result=api_data
 		if type(api_data) == list:
+
 			if str(api_data[0]) == '241':
 				tradeprice=float(result[1][0][0])
 				tradevol=result[1][0][0]

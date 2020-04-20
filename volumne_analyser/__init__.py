@@ -67,11 +67,13 @@ class VolumeAnalyser():
 
         if self.output_print == True:
             out  = '\u001b[38;5;248m ' +'{:<18}'.format(str(data['u'])) +' \033[0m'
-            out += '\u001b[38;5;70m '  +'{:8.6}'.format(data['bq'])     +' \033[0m'
+            if data['bq'] > 0:
+                out += '\u001b[38;5;70m '  +'{:8.6}'.format(data['bq'])     +' \033[0m'
             out += '\u001b[38;5;83m '  +'{:^10.8}'.format(data['bb'])   +' \033[0m'
             out += '\u001b[38;5;244m ' +'----'                          +' \033[0m'
             out += '\u001b[38;5;196m ' +'{:^10.8}'.format(data['bo'])   +' \033[0m'
-            out += '\u001b[38;5;124m ' +'{:>8.6}'.format(data['aq'])    +' \033[0m'
+            if data['aq'] > 0:
+                out += '\u001b[38;5;124m ' +'{:>8.6}'.format(data['aq'])    +' \033[0m'
             print(out)
 
         self.send_to_zmq( 'book_update', data )
