@@ -29,8 +29,8 @@ class VolumeAnalyser():
         self.exchange = exchange
         self.output_print = output_print
         self.started = datetime.utcnow()
-        self.last_bid = 0
-        self.last_ask = 0 
+        self.bestbid = 0
+        self.bestoffer = 0 
         self.faked_volume = 0
         self.legit_volume = 0
         self.last_trade_time = 0 
@@ -62,11 +62,11 @@ class VolumeAnalyser():
 
     def process_book_entry(self, data):
 
-        self.last_bid = data['bb'] 
-        self.last_ask = data['bo'] 
+        self.bestbid = data['bb'] 
+        self.bestoffer = data['bo'] 
 
         if self.output_print == True:
-            out  = '\u001b[38;5;248m ' +'{:<14}'.format(str(data['u'])) +' \033[0m'
+            out  = '\u001b[38;5;248m ' +'{:<18}'.format(str(data['u'])) +' \033[0m'
             out += '\u001b[38;5;70m '  +'{:8.6}'.format(data['bq'])     +' \033[0m'
             out += '\u001b[38;5;83m '  +'{:^10.8}'.format(data['bb'])   +' \033[0m'
             out += '\u001b[38;5;244m ' +'----'                          +' \033[0m'
@@ -91,7 +91,7 @@ class VolumeAnalyser():
         
         # Check if the trade occured above the last best bid, and below the last best ask
         # Thus occured 'between the spread' 
-        if ( ( data['price'] > self.last_bid ) and (data['price'] < self.last_ask) ):
+        if ( ( data['price'] > self.bestbid ) and (data['price'] < self.bestoffer) ):
             self.send_to_zmq('order_mismatch', data)
             if self.output_print == True:
                 print('\033[93m', '-- EXECUTION BETWEEN SPREAD (_o_): ', data['ts'], '--', data['price'], 'for', data['qty'], '\033[0m')
