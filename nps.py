@@ -258,9 +258,9 @@ def getmzq():
             exchanges[exchange_key]['title'].text = get_title_text(trade['summary'])
             exchanges[exchange_key]['summary'].text = get_summary_text(trade['summary'])
             
+        if (trade['action'] == 'order_mismatch'):
             exchanges[exchange_key]['empty_buffer'].text = ''
             exchanges[exchange_key]['empty_buffer'].insert_text( '.' )
-        # if (trade['action'] == 'order_mismatch'):
         #     txt = '\n'
         #     txt += '\033[93m' + ' -- EXECUTION BETWEEN SPREAD (_o_): ' +' \033[0m'
         #     txt += '\033[93m' + ' '+str(trade['data']['ts'])+' '       +' \033[0m'
@@ -268,7 +268,9 @@ def getmzq():
         #     txt += '\033[93m' + ' '+str(trade['data']['qty'])+' '      +' \033[0m'
         #     exchanges[exchange_key]['trades_buffer'].insert_text( txt )
 
-        # if (trade['action'] == 'order_legit'):
+        if (trade['action'] == 'order_legit'):
+            exchanges[exchange_key]['empty_buffer'].text = ''
+            exchanges[exchange_key]['empty_buffer'].insert_text( '.' )
         #     txt = '\n'
         #     txt += '\u001b[38;5;244m ' + ' -- Legit Trade: '                    +' \033[0m'
         #     txt += '\u001b[38;5;244m ' + ' '+str(trade['data']['ts'])+' '       +' \033[0m'
