@@ -133,33 +133,47 @@ def get_title_text(data):
     ]
 
 def get_summary_text(data=None): 
+    base_asset = ''
+    quote_asset = ''
     total_trades = 0
-    sum_fake_volume = 0
-    sum_legit_volume = 0
-    sum_fake_trades = 0
+    sum_faked_trades = 0
     sum_legit_trades = 0
+    sum_faked_volume = 0
+    sum_legit_volume = 0
+    faked_trades_percent = 0
+    legit_trades_percent = 0 
+    faked_volume_percent = 0
+    legit_volume_percent = 0 
+
     if data is not None:
+        base_asset = data['base_asset']
+        quote_asset = data['quote_asset']
         total_trades = data['total_trades']
-        sum_fake_volume = data['sum_fake_volume']
-        sum_legit_volume = data['sum_legit_volume']
-        sum_fake_trades = data['sum_fake_trades']
+        sum_faked_trades = data['sum_faked_trades']
         sum_legit_trades = data['sum_legit_trades']
+        sum_faked_volume = data['sum_faked_volume']
+        sum_legit_volume = data['sum_legit_volume']
+        faked_trades_percent = data['faked_trades_percent']
+        legit_trades_percent = data['legit_trades_percent']
+        faked_volume_percent = data['faked_volume_percent']
+        legit_volume_percent = data['legit_volume_percent']
+
 
     return [ 
-        ("class:status", 'Total Trades: '),
-        ("class:status.key", " "+str(total_trades)),
+        ("class:status", '{:>22}'.format('Total Trades:')),
+        ("class:status.key", ' {:>10.8}'.format(str(total_trades))),
         ("class:status", '\n'),
-        ("class:status", "No. of Fake trades: "),
-        ("class:status.key", " "+str(sum_fake_trades)+" "),
+        ("class:status", '{:>22}'.format('No. Fake Trades:')),
+        ("class:status.key", ' {:>10.8}'.format(str(sum_faked_trades))+  ' '+  '({:.2f}'.format(faked_trades_percent)+'%)'),
         ("class:status", '\n'),
-        ("class:status", "No. of Legit trades: "),
-        ("class:status.key", " "+str(sum_legit_trades)+" "),
+        ("class:status", '{:>22}'.format('No. Legit Trades:')),
+        ("class:status.key", ' {:>10.8}'.format(str(sum_legit_trades))+  ' '+  '({:.2f}'.format(legit_trades_percent)+'%)'),
         ("class:status", '\n'),
-        ("class:status", "Fake volume: "),
-        ("class:status.key", " "+str(sum_fake_volume)+" BTC"),
+        ("class:status", '{:>22}'.format('Total Fake Volume:')),
+        ("class:status.key", ' {:>10.8}'.format(str(sum_faked_volume))+  ' '+  '{:>5}'.format(base_asset)+  ' ('+'{:.2f}'.format(faked_volume_percent)+'%)'),
         ("class:status", '\n'),
-        ("class:status", "Legit volume: "),
-        ("class:status.key", " "+str(sum_legit_volume)+" BTC"),
+        ("class:status", '{:>22}'.format('Total Legit Volume:')),
+        ("class:status.key", ' {:>10.8}'.format(str(sum_legit_volume))+  ' '+  '{:>5}'.format(base_asset)+  ' ('+'{:.2f}'.format(legit_volume_percent)+'%)'),
     ]
 
 
@@ -189,7 +203,7 @@ def make_exchange_container( e_key ):
             Window(BufferControl(exchange['empty_buffer']), height=0),
             Window( height=1, content=exchange['title'], align=WindowAlign.LEFT, left_margins=[ScrollbarMargin()], ),
             Window(height=1, char="-", style="class:line.light"),
-            Window( height=1, content=exchange['book_buffer'], align=WindowAlign.CENTER ),
+            Window( height=1, content=exchange['book_buffer'], align=WindowAlign.LEFT ),
             Window(height=1, char="-", style="class:line.light"),
             Window(height=5, width=45, content=exchange['summary'], align=WindowAlign.LEFT, left_margins=[ScrollbarMargin()], ),
                 
@@ -257,6 +271,8 @@ def getmzq():
             exchanges[exchange_key]['book_buffer'].text = get_buffer_book_text(trade['data'])
             exchanges[exchange_key]['title'].text = get_title_text(trade['summary'])
             exchanges[exchange_key]['summary'].text = get_summary_text(trade['summary'])
+            exchanges[exchange_key]['empty_buffer'].text = ''
+            exchanges[exchange_key]['empty_buffer'].insert_text( '.' )
             
         if (trade['action'] == 'order_mismatch'):
             exchanges[exchange_key]['empty_buffer'].text = ''

@@ -17,6 +17,9 @@ __all__ = [
 import zmq
 import json  
 from datetime import datetime, timedelta
+import threading 
+from pprint import pprint 
+import asyncio
 
 class VolumeAnalyser():
 
@@ -37,6 +40,8 @@ class VolumeAnalyser():
         self.last_trade_time = 0 
         self.faked_trades  = int()
         self.legit_trades = int()
+        self.faked_trades_percent = float()
+        self.legit_trades_percent = float() 
         self.faked_volume_percent  = float()
         self.legit_volume_percent = float() 
 
@@ -62,11 +67,13 @@ class VolumeAnalyser():
                 'started': self.started.strftime("%Y-%m-%d %H:%M"),
                 'running_duration': (datetime.utcnow()-self.started).seconds,
                 'total_trades': (self.faked_trades+self.legit_trades),
-                'sum_fake_volume': self.faked_volume,
+                'sum_faked_volume': self.faked_volume,
                 'sum_legit_volume': self.legit_volume,
-                'sum_fake_trades': self.faked_trades,
+                'sum_faked_trades': self.faked_trades,
                 'sum_legit_trades': self.legit_trades,
-                'fake_volume_percent': self.faked_volume_percent,
+                'faked_trades_percent': self.faked_trades_percent,
+                'legit_trades_percent': self.legit_trades_percent,
+                'faked_volume_percent': self.faked_volume_percent,
                 'legit_volume_percent': self.legit_volume_percent,
             }
         }
@@ -127,17 +134,16 @@ class VolumeAnalyser():
             self.legit_volume = self.legit_volume + data['qty']
             self.legit_trades = self.legit_trades + 1
 
-        self.faked_volume_percent  = (self.faked_volume / (self.legit_volume+self.faked_volume)) * 100 
-        self.legit_volume_percent = (self.legit_volume / (self.legit_volume+self.faked_volume)) * 100  
         self.faked_trades_percent = (self.faked_trades / (self.legit_trades+self.faked_trades)) * 100 
         self.legit_trades_percent = (self.legit_trades / (self.legit_trades+self.faked_trades)) * 100 
+        self.faked_volume_percent  = (self.faked_volume / (self.legit_volume+self.faked_volume)) * 100 
+        self.legit_volume_percent = (self.legit_volume / (self.legit_volume+self.faked_volume)) * 100  
 
     def print_summary(self):
         if self.output_print == True:
-
             # print(out)
-            out  = '\u001b[38;5;132m '+ '{:<20}'.format('Total fake volume:')+  ' {:>10.8}'.format(str(self.faked_volume))+  ' '+  '{:>5}'.format(self.base_asset)+  ' ('+'{:.2f}'.format(self.faked_volume_percent)+'%) \033[0m \n'
-            out += '\u001b[38;5;132m '+ '{:<20}'.format('Total legit volume:')+ ' {:>10.8}'.format(str(self.legit_volume))+  ' '+  '{:>5}'.format(self.base_asset)+  ' ('+'{:.2f}'.format(self.legit_volume_percent)+'%) \033[0m \n'
-            out += '\u001b[38;5;135m '+ '{:<20}'.format('Num of fake trades:')+ ' {:>10.8}'.format(str(self.faked_trades))+  ' '+  '({:.2f}'.format(self.faked_trades_percent)+'%) \033[0m \n'
-            out += '\u001b[38;5;135m '+ '{:<20}'.format('Num of legit trades:')+ ' {:>10.8}'.format(str(self.legit_trades))+  ' '+  '({:.2f}'.format(self.legit_trades_percent)+'%) \033[0m '
+            out = '\u001b[38;5;135m '+ '{:<20}'.format('Num of fake trades:')+ ' {:>10.8}'.format(str(self.faked_trades))+  ' '+  '({:.2f}'.format(self.faked_trades_percent)+'%) \033[0m \n'
+            out += '\u001b[38;5;135m '+ '{:<20}'.format('Num of legit trades:')+ ' {:>10.8}'.format(str(self.legit_trades))+  ' '+  '({:.2f}'.format(self.legit_trades_percent)+'%) \033[0m \n'
+            out += '\u001b[38;5;132m '+ '{:<20}'.format('Total fake volume:')+  ' {:>10.8}'.format(str(self.faked_volume))+  ' '+  '{:>5}'.format(self.base_asset)+  ' ('+'{:.2f}'.format(self.faked_volume_percent)+'%) \033[0m \n'
+            out += '\u001b[38;5;132m '+ '{:<20}'.format('Total legit volume:')+ ' {:>10.8}'.format(str(self.legit_volume))+  ' '+  '{:>5}'.format(self.base_asset)+  ' ('+'{:.2f}'.format(self.legit_volume_percent)+'%) \033[0m '
             print(out)
