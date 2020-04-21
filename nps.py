@@ -267,14 +267,16 @@ def getmzq():
         topic, trade = demogrify(msg.decode("utf-8"))
         exchange_key = topic.split('_')[0].lower()
 
-        if trade['action'] == 'book_update':
-            exchanges[exchange_key]['book_buffer'].text = get_buffer_book_text(trade['data'])
-            exchanges[exchange_key]['title'].text = get_title_text(trade['summary'])
-            exchanges[exchange_key]['summary'].text = get_summary_text(trade['summary'])
-            exchanges[exchange_key]['empty_buffer'].text = ''
-            exchanges[exchange_key]['empty_buffer'].insert_text( '.' )
+        # if trade['action'] == 'book_update':
+        #     exchanges[exchange_key]['book_buffer'].text = get_buffer_book_text(trade['data'])
+        #     exchanges[exchange_key]['title'].text = get_title_text(trade['summary'])
+        #     exchanges[exchange_key]['summary'].text = get_summary_text(trade['summary'])
+        #     exchanges[exchange_key]['empty_buffer'].text = ''
+        #     exchanges[exchange_key]['empty_buffer'].insert_text( '.' )
             
         if (trade['action'] == 'order_mismatch'):
+            exchanges[exchange_key]['title'].text = get_title_text(trade['summary'])
+            exchanges[exchange_key]['summary'].text = get_summary_text(trade['summary'])
             exchanges[exchange_key]['empty_buffer'].text = ''
             exchanges[exchange_key]['empty_buffer'].insert_text( '.' )
         #     txt = '\n'
@@ -285,6 +287,8 @@ def getmzq():
         #     exchanges[exchange_key]['trades_buffer'].insert_text( txt )
 
         if (trade['action'] == 'order_legit'):
+            exchanges[exchange_key]['title'].text = get_title_text(trade['summary'])
+            exchanges[exchange_key]['summary'].text = get_summary_text(trade['summary'])
             exchanges[exchange_key]['empty_buffer'].text = ''
             exchanges[exchange_key]['empty_buffer'].insert_text( '.' )
         #     txt = '\n'

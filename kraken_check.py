@@ -113,7 +113,7 @@ if __name__ == "__main__":
 
 			if str(api_data[0]) == '241':
 				tradeprice=float(result[1][0][0])
-				tradevol=result[1][0][0]
+				tradevol=result[1][0][1]
 				va.bestbid=round(float(best_bid()),1)
 				va.bestoffer=round(float(best_ask()),1)
 				trade_ts = result[1][0][2]
