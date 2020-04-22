@@ -49,10 +49,10 @@ If this data is provided then some, if not all, of the discrepancies can be expl
     
 | Exchange        | Volume executed between the spread (\_o\_) ? | Notes  |  
 | ------------- |:-------------:|:----- |  
-| Binance | **30%** | Approx 30% of volume executes between the spread |   
-| Coinbase     | **2-3%** | Approx 2-3% of volume executes between the spread |  
-| Bitstamp | **<1%**      | Tested over a 12h period  | 
-| FTX     | **<1%** | within margin of error for latency issues |  
+| Binance | **10%** | Tested over a 16h period |   
+| Coinbase     | **5.7%** | Tested over a 15h period |  
+| Bitstamp | **0%**      | Tested over a 15h period  | 
+| FTX     | **1.5%** | Tested over a 12h period |  
 | Kraken | **0%**      |  **PERFECT** - Tested and no fake volume identified  |   
 | Bitfinex     | -      |   Exchange has hidden orders so test is non applicable |  
 | "Bilaxy"  | **YES** |  Totally fake. See [video](https://www.youtube.com/watch?v=eHZ_p0pRYi4) | 
@@ -74,8 +74,16 @@ python coinbase_check.py
 python nps.py -e binance bitstamp coinbase    
 ```   
 ![preview](https://i.imgur.com/IEdet2s.png)  
+    
+Binance  
+![binance](https://i.imgur.com/2BnP9Hl.png)  
+Bitstamp   
+![bitstamp](https://i.imgur.com/v7Qnbzs.png)  
+Coinbase   
+![coinbase](https://i.imgur.com/XeHmt7T.png)    
+FTX   
+![ftx](https://i.imgur.com/qI4VPJj.png)   
   
-
 ---   
     
 #### Binance  Notes
